@@ -127,12 +127,31 @@ public class App {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Ingrese la cantidad a depositar: $");
         double cantidad = scanner.nextDouble();
-
         if (cantidad <= 0) {
             System.out.println("Cantidad no válida.");
         } else {
             saldo += cantidad;
             System.out.println("Depósito realizado con éxito. Su nuevo saldo es: $" + saldo);
+            // Actualizar el saldo en la base de datos en la tabla historico
+            Connection connection = null;
+            try {
+                connection = getConnection(); // Reemplaza esto con tu conexión real
+            } catch (SQLException ex) {
+                System.err.println("No se puede conectar a Base de Datos");
+                ex.printStackTrace();
+                System.exit(1);
+            }
+            String query = "INSERT INTO historico (usuario_id, tipo_operacion, cantidad, fecha) VALUES (?, ?, ?, ?)";
+            try {
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setInt(1, usuarioId);
+                preparedStatement.setString(2, "deposito");
+                preparedStatement.setDouble(3, cantidad);
+                preparedStatement.setDate(4, new java.sql.Date(System.currentTimeMillis()));
+                preparedStatement.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -148,6 +167,26 @@ public class App {
         } else {
             saldo -= cantidad;
             System.out.println("Retiro realizado con éxito. Su nuevo saldo es: $" + saldo);
+            // Actualizar el saldo en la base de datos en la tabla historico
+            Connection connection = null;
+            try {
+                connection = getConnection(); // Reemplaza esto con tu conexión real
+            } catch (SQLException ex) {
+                System.err.println("No se puede conectar a Base de Datos");
+                ex.printStackTrace();
+                System.exit(1);
+            }
+            String query = "INSERT INTO historico (usuario_id, tipo_operacion, cantidad, fecha) VALUES (?, ?, ?, ?)";
+            try {
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                preparedStatement.setInt(1, usuarioId);
+                preparedStatement.setString(2, "retiro");
+                preparedStatement.setDouble(3, cantidad);
+                preparedStatement.setDate(4, new java.sql.Date(System.currentTimeMillis()));
+                preparedStatement.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
