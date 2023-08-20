@@ -45,7 +45,7 @@ public class App {
             ex.printStackTrace();
             System.exit(1);
         }
-        
+
 
         while (intentos > 0) {
             System.out.print("Ingrese su PIN de 4 dígitos: ");
@@ -141,13 +141,23 @@ public class App {
                 ex.printStackTrace();
                 System.exit(1);
             }
-            String query = "INSERT INTO historico (usuario_id, tipo_operacion, cantidad, fecha) VALUES (?, ?, ?, ?)";
+            String historico = "INSERT INTO historico (usuario_id, tipo_operacion, cantidad, fecha) VALUES (?, ?, ?, ?)";
             try {
-                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                PreparedStatement preparedStatement = connection.prepareStatement(historico);
                 preparedStatement.setInt(1, usuarioId);
                 preparedStatement.setString(2, "deposito");
                 preparedStatement.setDouble(3, cantidad);
                 preparedStatement.setDate(4, new java.sql.Date(System.currentTimeMillis()));
+                preparedStatement.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            //Actualizar el saldo en la base de datos en la tabla usuarios
+            String usuario = "UPDATE usuarios SET saldo = ? WHERE id = ?";
+            try {
+                PreparedStatement preparedStatement = connection.prepareStatement(usuario);
+                preparedStatement.setDouble(1, saldo);
+                preparedStatement.setInt(2, usuarioId);
                 preparedStatement.executeUpdate();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -176,13 +186,22 @@ public class App {
                 ex.printStackTrace();
                 System.exit(1);
             }
-            String query = "INSERT INTO historico (usuario_id, tipo_operacion, cantidad, fecha) VALUES (?, ?, ?, ?)";
+            String historico = "INSERT INTO historico (usuario_id, tipo_operacion, cantidad, fecha) VALUES (?, ?, ?, ?)";
             try {
-                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                PreparedStatement preparedStatement = connection.prepareStatement(historico);
                 preparedStatement.setInt(1, usuarioId);
                 preparedStatement.setString(2, "retiro");
                 preparedStatement.setDouble(3, cantidad);
                 preparedStatement.setDate(4, new java.sql.Date(System.currentTimeMillis()));
+                preparedStatement.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            String usuario = "UPDATE usuarios SET saldo = ? WHERE id = ?";
+            try {
+                PreparedStatement preparedStatement = connection.prepareStatement(usuario);
+                preparedStatement.setDouble(1, saldo);
+                preparedStatement.setInt(2, usuarioId);
                 preparedStatement.executeUpdate();
             } catch (Exception e) {
                 e.printStackTrace();
