@@ -7,11 +7,11 @@ import java.sql.*;
 
 public class UIATM extends JFrame implements ActionListener {
     private JTextField pinField;
-    private JLabel balanceLabel;
-    private JTextField depositField;
-    private JTextField withdrawField;
-    private JTextField newPinField;
-    private JTextField confirmPinField;
+    private JLabel saldoLabel;
+    private JTextField depositarField;
+    private JTextField retirarField;
+    private JTextField nuevoPinField;
+    private JTextField confirmarPinField;
 
     private static int usuarioId;
     private static double saldo;
@@ -32,10 +32,10 @@ public class UIATM extends JFrame implements ActionListener {
         // Create the PIN panel
         JPanel pinPanel = new JPanel();
         pinPanel.setLayout(new FlowLayout());
-        pinPanel.add(new JLabel("Enter PIN:"));
+        pinPanel.add(new JLabel("Ingrese el PIN:"));
         pinField = new JTextField(10);
         pinPanel.add(pinField);
-        JButton enterButton = new JButton("Enter");
+        JButton enterButton = new JButton("Ingresar");
         enterButton.addActionListener(this);
         pinPanel.add(enterButton);
         add(pinPanel, BorderLayout.NORTH);
@@ -43,49 +43,49 @@ public class UIATM extends JFrame implements ActionListener {
         // Create the balance panel
         JPanel balancePanel = new JPanel();
         balancePanel.setLayout(new FlowLayout());
-        balanceLabel = new JLabel("Balance: $0.00");
-        balancePanel.add(balanceLabel);
+        saldoLabel = new JLabel("Saldo: $0.00");
+        balancePanel.add(saldoLabel);
         add(balancePanel, BorderLayout.CENTER);
 
         // Create the transaction panel
         JPanel transactionPanel = new JPanel();
         transactionPanel.setLayout(new GridLayout(4, 2));
-        transactionPanel.add(new JLabel("Deposit:"));
-        depositField = new JTextField(10);
-        transactionPanel.add(depositField);
+        transactionPanel.add(new JLabel("Depositar:"));
+        depositarField = new JTextField(10);
+        transactionPanel.add(depositarField);
 
-        JButton depositButton = new JButton("Deposit");
+        JButton depositButton = new JButton("Depositar");
         depositButton.addActionListener(this);
         transactionPanel.add(depositButton);
 
-        JLabel withdrawLabel = new JLabel("Withdraw:");
+        JLabel withdrawLabel = new JLabel("Retirar:");
         transactionPanel.add(withdrawLabel);
-        withdrawField = new JTextField(10);
-        transactionPanel.add(withdrawField);
-        JButton withdrawButton = new JButton("Withdraw");
+        retirarField = new JTextField(10);
+        transactionPanel.add(retirarField);
+        JButton withdrawButton = new JButton("Retirar");
         withdrawButton.addActionListener(this);
         transactionPanel.add(withdrawButton);
 
-        JLabel newPinLabel = new JLabel("New PIN:");
+        JLabel newPinLabel = new JLabel("Nuevo PIN:");
         transactionPanel.add(newPinLabel);
-        newPinField = new JTextField(10);
-        transactionPanel.add(newPinField);
+        nuevoPinField = new JTextField(10);
+        transactionPanel.add(nuevoPinField);
 
-        JLabel confirmPinLabel = new JLabel("Confirm PIN:");
+        JLabel confirmPinLabel = new JLabel("Confirmar PIN:");
         transactionPanel.add(confirmPinLabel);
-        confirmPinField = new JTextField(10);
-        transactionPanel.add(confirmPinField);
+        confirmarPinField = new JTextField(10);
+        transactionPanel.add(confirmarPinField);
 
-        JButton changePinButton = new JButton("Change PIN");
+        JButton changePinButton = new JButton("Cambiar PIN");
         changePinButton.addActionListener(this);
         transactionPanel.add(changePinButton);
         add(transactionPanel, BorderLayout.SOUTH);
 
-        JButton exitButton = new JButton("Exit");
+        JButton exitButton = new JButton("Salir");
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.exit(0); // Cierra la aplicación al presionar el botón "Exit"
+                System.exit(0);
             }
         });
         transactionPanel.add(exitButton);
@@ -110,18 +110,18 @@ public class UIATM extends JFrame implements ActionListener {
             }
             if (validarPIN(connection, pinIngresado)) {
                 pinActual = pinIngresado;
-                balanceLabel.setText("Balance: $" + saldo);
+                saldoLabel.setText("Balance: $" + saldo);
             } else {
                 JOptionPane.showMessageDialog(this, "PIN incorrecto.");
             }
         } else if (command.equals("Deposit")) {
             // Deposit the entered amount and update the balance label
-            double cantidad = Double.parseDouble(depositField.getText());
+            double cantidad = Double.parseDouble(depositarField.getText());
             if (cantidad <= 0) {
                 JOptionPane.showMessageDialog(this, "Cantidad no válida.");
             } else {
                 saldo += cantidad;
-                balanceLabel.setText("Balance: $" + saldo);
+                saldoLabel.setText("Balance: $" + saldo);
                 Connection connection = null;
                 try {
                     connection = getConnection();
@@ -150,17 +150,17 @@ public class UIATM extends JFrame implements ActionListener {
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-            }depositField.setText("");
+            }depositarField.setText("");
         } else if (command.equals("Withdraw")) {
             // Withdraw the entered amount and update the balance label
-            double cantidad = Double.parseDouble(withdrawField.getText());
+            double cantidad = Double.parseDouble(retirarField.getText());
             if (cantidad <= 0) {
                 JOptionPane.showMessageDialog(this, "Cantidad no válida.");
             } else if (cantidad > saldo) {
                 JOptionPane.showMessageDialog(this, "Saldo insuficiente.");
             } else {
                 saldo -= cantidad;
-                balanceLabel.setText("Balance: $" + saldo);
+                saldoLabel.setText("Balance: $" + saldo);
                 Connection connection = null;
                 try {
                     connection = getConnection();
@@ -192,13 +192,13 @@ public class UIATM extends JFrame implements ActionListener {
             }
             } else if (command.equals("Change PIN")) {
                 // Change the user's PIN
-                int nuevoPin = Integer.parseInt(newPinField.getText());
-                int confirmacionPin = Integer.parseInt(confirmPinField.getText());
+                int nuevoPin = Integer.parseInt(nuevoPinField.getText());
+                int confirmacionPin = Integer.parseInt(confirmarPinField.getText());
                 if (nuevoPin == confirmacionPin) {
                     pinActual = nuevoPin;
                     JOptionPane.showMessageDialog(this, "PIN actualizado con éxito.");
-                    newPinField.setText("");
-                    confirmPinField.setText("");
+                    nuevoPinField.setText("");
+                    confirmarPinField.setText("");
                     Connection connection = null;
                     try {
                         connection = getConnection();
@@ -219,7 +219,7 @@ public class UIATM extends JFrame implements ActionListener {
                 } else {
                     JOptionPane.showMessageDialog(this, "Los PINs no coinciden.");
                 }
-            }withdrawField.setText("");
+            }depositarField.setText("");
         }
 
     public static Connection getConnection() throws SQLException {
