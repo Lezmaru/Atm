@@ -1,4 +1,4 @@
-package bo.edu.ucb.sis213;
+/*package bo.edu.ucb.sis213;
 
 import java.util.Scanner;
 import java.sql.Connection;
@@ -231,3 +231,4 @@ public class App {
         }
     }
 }
+*/
